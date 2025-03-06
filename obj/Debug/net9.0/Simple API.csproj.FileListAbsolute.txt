@@ -1,0 +1,33 @@
+C:\Simple API\Simple API\bin\Debug\net9.0\appsettings.Development.json
+C:\Simple API\Simple API\bin\Debug\net9.0\appsettings.json
+C:\Simple API\Simple API\bin\Debug\net9.0\Simple API.staticwebassets.endpoints.json
+C:\Simple API\Simple API\bin\Debug\net9.0\Simple API.exe
+C:\Simple API\Simple API\bin\Debug\net9.0\Simple API.deps.json
+C:\Simple API\Simple API\bin\Debug\net9.0\Simple API.runtimeconfig.json
+C:\Simple API\Simple API\bin\Debug\net9.0\Simple API.dll
+C:\Simple API\Simple API\bin\Debug\net9.0\Simple API.pdb
+C:\Simple API\Simple API\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Simple API\Simple API\bin\Debug\net9.0\Microsoft.OpenApi.dll
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.csproj.AssemblyReference.cache
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.AssemblyInfoInputs.cache
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.AssemblyInfo.cs
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.csproj.CoreCompileInputs.cache
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.MvcApplicationPartsAssemblyInfo.cs
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.MvcApplicationPartsAssemblyInfo.cache
+C:\Simple API\Simple API\obj\Debug\net9.0\scopedcss\bundle\Simple API.styles.css
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets.build.json
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets.development.json
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets\msbuild.Simple API.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets\msbuild.Simple API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets\msbuild.build.Simple API.props
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.Simple API.props
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.Simple API.props
+C:\Simple API\Simple API\obj\Debug\net9.0\staticwebassets.pack.json
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.csproj.Up2Date
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.dll
+C:\Simple API\Simple API\obj\Debug\net9.0\refint\Simple API.dll
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.pdb
+C:\Simple API\Simple API\obj\Debug\net9.0\Simple API.genruntimeconfig.cache
+C:\Simple API\Simple API\obj\Debug\net9.0\ref\Simple API.dll
