@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddSingleton<InterfaceCategory, CategoryDataAccesslayer_DAL>();    
+builder.Services.AddSingleton<InterfaceCategory, CategoryADO>();
 builder.Services.AddSingleton<InterfaceInstructor, InstructorDataAccessLayer_DAL>();
+builder.Services.AddSingleton<InterfaceCourse, CourseADO>();
+
 
 var app = builder.Build();
 
@@ -24,14 +26,14 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("api/v1/helloservices", (string? id) => 
+app.MapGet("api/v1/helloservices", (string? id) =>
 {
     return $"Hello ASP Web API: id= {id}";
-} );
+});
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -43,57 +45,84 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.MapGet("api/v1/categories", (InterfaceCategory category) => 
+app.MapGet("api/v1/categories", (InterfaceCategory category) =>
 {
     return category.GetCategories();
-} );
+});
 
-app.MapGet("api/v1/categories/{id}", (InterfaceCategory category, int id) => 
+app.MapGet("api/v1/categories/{id}", (InterfaceCategory category, int id) =>
 {
     return category.GetCategory(id);
-} );
+});
 
-app.MapPost("api/v1/categories/", (InterfaceCategory categoryData, Category category) => 
+app.MapPost("api/v1/categories/", (InterfaceCategory categoryData, Category category) =>
 {
     return categoryData.AddCategory(category);
-} );
+});
 
-app.MapPut("api/v1/categories/", (InterfaceCategory categoryData, Category category) => 
+app.MapPut("api/v1/categories/", (InterfaceCategory categoryData, Category category) =>
 {
     return categoryData.UpdateCategory(category);
-} );
+});
 
-app.MapDelete("api/v1/categories/{id}", (InterfaceCategory categoryData, int id) => 
+app.MapDelete("api/v1/categories/{id}", (InterfaceCategory categoryData, int id) =>
 {
     categoryData.DeleteCategory(id);
     return "Category deleted successfully";
-} );
+});
 
-app.MapGet("api/v1/instructors", (InterfaceInstructor instructor) => 
+app.MapGet("api/v1/instructors", (InterfaceInstructor instructor) =>
 {
     return instructor.GetInstructors();
-} );
+});
 
-app.MapGet("api/v1/instructors/{id}", (InterfaceInstructor instructor, int id) => 
+app.MapGet("api/v1/instructors/{id}", (InterfaceInstructor instructor, int id) =>
 {
     return instructor.GetInstructor(id);
-} );
+});
 
-app.MapPost("api/v1/instructors", (InterfaceInstructor instructorData, Instructor instructor) => 
+app.MapPost("api/v1/instructors", (InterfaceInstructor instructorData, Instructor instructor) =>
 {
     return instructorData.AddInstructor(instructor);
-} );
+});
 
-app.MapPut("api/v1/instructors", (InterfaceInstructor instructorData, Instructor instructor) => 
+app.MapPut("api/v1/instructors", (InterfaceInstructor instructorData, Instructor instructor) =>
 {
     return instructorData.UpdateInstructor(instructor);
-} );
+});
 
-app.MapDelete("api/v1/instructors/{id}", (InterfaceInstructor instructorData, int id) => 
+app.MapDelete("api/v1/instructors/{id}", (InterfaceInstructor instructorData, int id) =>
 {
     instructorData.DeleteInstructor(id);
     return "Instructor deleted successfully";
-} );
+});
+
+app.MapGet("api/v1/courses", (InterfaceCourse course) =>
+{
+    return course.GetCourses();
+});
+
+app.MapGet("api/v1/courses/{id}", (InterfaceCourse course, int id) =>
+{
+    return course.GetCourse(id);
+});
+
+app.MapPost("api/v1/courses", (InterfaceCourse courseData, Course course) =>
+{
+    return courseData.AddCourse(course);
+});
+
+
+app.MapPut("api/v1/courses", (InterfaceCourse courseData, Course course) =>
+{
+    return courseData.UpdateCourse(course);
+});
+
+app.MapDelete("api/v1/courses/{id}", (InterfaceCourse courseData, int id) =>
+{
+    courseData.DeleteCourse(id);
+    return "Course deleted successfully";
+});
 
 
 
