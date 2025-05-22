@@ -9,5 +9,7 @@ namespace Simple_API.models
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; } = null!;
+
+        public IEnumerable<Course>? Courses { get; set; } = new List<Course>();
     }
 }

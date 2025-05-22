@@ -1,29 +1,41 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using Simple_API.data;
+using Simple_API.DTO;
 using Simple_API.models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// builder.Services.AddOpenApi();
 //add ef core
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
 
 
-//builder.Services.AddScoped<InterfaceCategory, CategoryEF>();
-//builder.Services.AddSingleton<InterfaceInstructor, InstructorDataAccessLayer_DAL>();
+
+builder.Services.AddScoped<InterfaceCategory, CategoryEF>();
 builder.Services.AddScoped<InterfaceCourse, CourseEF>();
+builder.Services.AddScoped<InterfaceInstructor, IntructorEF>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.MapOpenApi();
+// }
 
 app.UseHttpsRedirection();
 
@@ -51,10 +63,10 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-// app.MapGet("api/v1/categories", ( InterfaceCategory category) =>
-// {
-//     return category.GetCategories();
-// });
+app.MapGet("api/v1/categories", (InterfaceCategory category) =>
+{
+    return category.GetCategories();
+});
 
 // app.MapGet("api/v1/categories/{id}", (InterfaceCategory category, int id) =>
 // {
@@ -79,12 +91,46 @@ app.MapGet("/weatherforecast", () =>
 
 // app.MapGet("api/v1/instructors", (InterfaceInstructor instructor) =>
 // {
-//     return instructor.GetInstructors();
+//     List<InstructorDTO> instructorsDTOs = new List<InstructorDTO>();
+//     var instructors = instructor.GetAllInstructors();
+//     foreach (var instructorData in instructors)
+//     {
+//         InstructorDTO instructorDTO = new InstructorDTO
+//         {
+//             InstructorId = instructorData.InstructorId,
+//             InstructorName = instructorData.InstructorName,
+//             Course = instructorData.Courses != null ? new CourseDTO
+//             {
+//             CourseId = instructorData.Course.CourseId,
+//             CourseName = instructorData.Course.CourseName
+//             } : null
+//         };
+//         instructorsDTOs.Add(instructorDTO);
+//     }
+//     return instructorsDTOs;
 // });
 
 // app.MapGet("api/v1/instructors/{id}", (InterfaceInstructor instructor, int id) =>
 // {
-//     return instructor.GetInstructor(id);
+//     var instructorData = instructor.GetInstructorbyid(id);
+//     if (instructorData != null)
+//     {
+//         InstructorDTO instructorDTO = new InstructorDTO
+//         {
+//             InstructorId = instructorData.InstructorId,
+//             InstructorName = instructorData.InstructorName,
+//             Course = instructorData.Course != null ? new CourseDTO
+//             {
+//                 CourseId = instructorData.Course.CourseId,
+//                 CourseName = instructorData.Course.CourseName
+//             } : null
+//         };
+//         return instructorDTO;
+//     }
+//     else
+//     {
+//         throw new Exception("Instructor not found");
+//     }
 // });
 
 // app.MapPost("api/v1/instructors", (InterfaceInstructor instructorData, Instructor instructor) =>
@@ -103,25 +149,43 @@ app.MapGet("/weatherforecast", () =>
 //     return "Instructor deleted successfully";
 // });
 
-app.MapGet("api/v1/courses", (InterfaceCourse kors) =>
+app.MapGet("api/v1/courses", (InterfaceCourse kors, IMapper mapper) =>
 {
-    return kors.GetCourses();
+    var courses = kors.GetAllCourses();
+    // List<CourseDTO> coursesDTOs = new List<CourseDTO>();
+    var result = mapper.Map<List<CourseDTO>>(courses);
+    return Results.Ok(result);
+
 });
 
-app.MapGet("api/v1/courses/{id}", (InterfaceCourse course, int id) =>
+app.MapGet("api/v1/courses/{id}", (InterfaceCourse course, int id, IMapper mapper) =>
 {
-    return course.GetCourse(id);
+    var courseData = course.GetCoursebyIdCourse(id);
+    if (courseData == null)
+    {
+        return Results.NotFound();
+    }
+
+    var result = mapper.Map<CourseDTO>(courseData);
+    return Results.Ok(result);
 });
 
-app.MapPost("api/v1/courses", (InterfaceCourse courseData, Course course) =>
+
+app.MapPost("api/v1/courses", (InterfaceCourse courseData, CourseAddDTO courseAddDTO, IMapper mapper) =>
 {
-    return courseData.AddCourse(course);
+    var courseEntity = mapper.Map<Course>(courseAddDTO);
+    var course = courseData.AddCourse(courseEntity);
+    var result = mapper.Map<CourseDTO>(course);
+    return Results.Created($"/api/v1/courses/{course.CourseId}", result);
 });
 
 
-app.MapPut("api/v1/courses", (InterfaceCourse courseData, Course course) =>
+app.MapPut("api/v1/courses", (InterfaceCourse courseData, CourseUpdateDTO courseUpdateDTO, IMapper mapper) =>
 {
-    return courseData.UpdateCourse(course);
+    var courseEntity = mapper.Map<Course>(courseUpdateDTO);
+    var course = courseData.UpdateCourse(courseEntity);
+    var result = mapper.Map<CourseDTO>(course);
+    return Results.Ok(result);
 });
 
 app.MapDelete("api/v1/courses/{id}", (InterfaceCourse courseData, int id) =>

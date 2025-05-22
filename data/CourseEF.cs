@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Simple_API.models;
 
 namespace Simple_API.data
 {
     public class CourseEF : InterfaceCourse
     {
-        private readonly ApplicationDBContext _context ;
+        private readonly ApplicationDBContext _context;
         public CourseEF(ApplicationDBContext context)
         {
             _context = context;
         }
-        public Course AddCourse(Course course)
+        public Course? AddCourse(Course course)
         {
             try
             {
@@ -22,10 +23,10 @@ namespace Simple_API.data
             }
             catch (Exception ex)
             {
-                throw new Exception("Error adding course", ex);
+                Console.WriteLine($"Error saving course: {ex.Message}");
+                throw;
             }
         }
-
         public void DeleteCourse(int CourseId)
         {
             var course = GetCourse(CourseId);
@@ -38,6 +39,13 @@ namespace Simple_API.data
             {
                 throw new Exception("Course not found");
             }
+        }
+
+        public IEnumerable<Course> GetAllCourses()
+        {
+            var courses = from c in _context.Courses.Include(c => c.Category).Include(c => c.Instructor)
+                          select c;
+            return courses.ToList();
         }
 
         public Course GetCourse(int CourseId)
@@ -57,32 +65,53 @@ namespace Simple_API.data
             }
         }
 
-        public IEnumerable<Course> GetCourses()
+        public Course GetCourseById(int CourseId)
         {
-            var course = _context.Courses.OrderByDescending(c => c.CourseId).ToList();
-            return course;
+            var course = _context.Courses
+                .FirstOrDefault(c => c.CourseId == CourseId);
+            if (course != null)
+            {
+                return course;
+            }
+            throw new Exception("Course not found");
+        }
+
+        public Course GetCoursebyIdCourse(int CourseId)
+        {
+            var course = _context.Courses.Include(c => c.Category).Include(c => c.Instructor)
+                .FirstOrDefault(c => c.CourseId == CourseId);
+            if (course != null)
+            {
+                return course;
+            }
+            throw new Exception("Course not found");
         }
 
         public Course UpdateCourse(Course course)
         {
-            var existingCourse = GetCourse(course.CourseId);
-            if (existingCourse != null)
+            var existingCourse = GetCourseById(course.CourseId);
+            if (existingCourse == null)
+            {
+                throw new Exception($"Course dengan ID {course.CourseId} gak ditemuin!.");
+            }
+            try
             {
                 existingCourse.CourseName = course.CourseName;
-                existingCourse.CourseId = course.CourseId;
                 existingCourse.CourseDescription = course.CourseDescription;
                 existingCourse.Duration = course.Duration;
                 existingCourse.CategoryId = course.CategoryId;
+                existingCourse.InstructorId = course.InstructorId;
+
                 _context.Courses.Update(existingCourse);
                 _context.SaveChanges();
-                // Ensure the Description column exists in the database before using it
-                // existingCourse.Description = course.Description;
                 return existingCourse;
             }
-            else 
+            catch (Exception ex)
             {
-                throw new Exception("Course not found");
+                throw new Exception($"Gagal mengubah course: {ex.Message}");
             }
+
+
         }
     }
 }

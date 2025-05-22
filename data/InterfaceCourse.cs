@@ -8,10 +8,16 @@ namespace Simple_API.data
 {
     public interface InterfaceCourse
     {
-        IEnumerable<Course> GetCourses();
-        Course GetCourse(int CourseId);
-        Course AddCourse(Course course);
+        // IEnumerable<ViewCourseWithCategories> GetCourses();
+        // ViewCourseWithCategories GetCourse(int CourseId);
+        Course? AddCourse(Course course);
         Course UpdateCourse(Course course);
         void DeleteCourse(int CourseId);
+
+        // IEnumerable<Course> GetCoursesByCategory(int CategoryId);
+
+        Course GetCoursebyIdCourse(int CourseId);
+        Course GetCourseById(int CourseId); 
+        IEnumerable<Course> GetAllCourses();
     }
 }

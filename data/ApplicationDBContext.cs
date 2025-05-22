@@ -14,9 +14,10 @@ namespace Simple_API.data
 
         }
 
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; } = null!;
         //public DbSet<Instructor> Instructors { get; set; }
-        public DbSet<Course> Courses { get; set; }
+        public DbSet<Course> Courses { get; set; } = null!;
+        public DbSet<Instructor> Instructors { get; set; } = null!;
     }
     
 }

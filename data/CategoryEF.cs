@@ -51,6 +51,7 @@ namespace Simple_API.data
             var categories = _context.Categories.OrderByDescending(c => c.CategoryName).ToList();
             return categories;
         }
+    
 
         public Category GetCategory(int id)
         {
