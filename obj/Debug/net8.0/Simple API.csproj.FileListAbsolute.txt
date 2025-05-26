@@ -112,3 +112,11 @@ C:\Simple API\Simple API\obj\Debug\net8.0\Simple API.genruntimeconfig.cache
 C:\Simple API\Simple API\obj\Debug\net8.0\ref\Simple API.dll
 C:\Simple API\Simple API\bin\Debug\net8.0\AutoMapper.dll
 C:\Simple API\Simple API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Simple API\Simple API\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

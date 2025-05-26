@@ -14,5 +14,5 @@ public class AutoMapperProfile : Profile
         // DTO ke Model
         CreateMap<CourseAddDTO, Course>();
         CreateMap<CourseUpdateDTO, Course>();
-    }
+    } 
 }

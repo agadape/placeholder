@@ -3,14 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Simple_API.data;
 using Simple_API.DTO;
 using Simple_API.models;
+using Simple_API.Helpers;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+var key = "7FCD14CEC7744D2B9C5C4F29AA62BB0F";
 builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -21,11 +26,27 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
 
-
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    };
+});
 
 builder.Services.AddScoped<InterfaceCategory, CategoryEF>();
 builder.Services.AddScoped<InterfaceCourse, CourseEF>();
 builder.Services.AddScoped<InterfaceInstructor, IntructorEF>();
+builder.Services.AddScoped<InterfaceUserASP, UserASPEF>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
@@ -43,6 +64,66 @@ var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+app.MapGet("api/v1/cekpassword/{password}", (string password) =>
+{
+    var pass = Simple_API.Helpers.HashHelper.HashPassword(password);
+    return Results.Ok($"Password : {password}, Hash: {pass}");
+});
+
+
+// Register 
+app.MapPost("api/v1/register", (InterfaceUserASP userASP, UserRegisterDTO dto) =>
+{
+    var user = new AspUsers
+    {
+        username = dto.Username,
+        password = dto.Password,
+        email = dto.Email,
+        phone = dto.Phone,
+        FirstName = dto.FirstName,
+        LastName = dto.LastName,
+        Address = dto.Address,
+        City = dto.City,
+        Country = dto.Country,
+        role = dto.role
+    };
+
+    var newUser = userASP.RegisterUser(user);
+    return Results.Created($"/api/v1/users/{newUser.username}", newUser);
+});
+
+//login
+app.MapPost("api/v1/login", (UserLoginDTO dto, InterfaceUserASP userASP) =>
+{
+    var user = userASP.LoginUser(dto.Username, dto.Password);
+    if (user == null)
+        return Results.Unauthorized();
+
+    var token = JwtHelper.GenerateToken(user.username, user.role, key);
+
+    return Results.Ok(new
+    {
+        Token = token,
+        Username = user.username,
+        Role = user.role
+    });
+});
+
+
+//proteksi endpoint berdasarkan role 
+app.MapGet("/api/v1/admin-only", [Authorize(Roles = "admin")] () =>
+{
+    return Results.Ok("Hello Admin!");
+});
+
+app.MapGet("/api/v1/user-data", [Authorize(Roles = "user,admin")] (HttpContext context) =>
+{
+    var username = context.User.Identity?.Name;
+    return Results.Ok($"Hallo user : {username}!!");
+});
+
+// end of authenticate endpoint
 
 app.MapGet("api/v1/helloservices", (string? id) =>
 {
@@ -195,7 +276,8 @@ app.MapDelete("api/v1/courses/{id}", (InterfaceCourse courseData, int id) =>
 });
 
 
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

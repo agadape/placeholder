@@ -18,6 +18,7 @@ namespace Simple_API.data
         //public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Course> Courses { get; set; } = null!;
         public DbSet<Instructor> Instructors { get; set; } = null!;
+        public DbSet<AspUsers> AspUsers { get; set; } = null!;
     }
     
 }
